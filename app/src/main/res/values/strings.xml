@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">DogsBreeds</string>
+    <string name="dogs">Dogs</string>
+    <string name="loading_data">Loading data…</string>
+    <string name="fetch">Fetch</string>
+    <string name="dog_image">Dog image</string>
+    <string name="image_not_supported">Image not supported</string>
 </resources>
