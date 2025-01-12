@@ -1,4 +1,4 @@
-package com.bugbender.dogsbreeds.presentation.dogs
+package com.bugbender.dogsbreeds.presentation.ui.dogs
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

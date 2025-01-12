@@ -1,4 +1,4 @@
-package com.bugbender.dogsbreeds.ui.theme
+package com.bugbender.dogsbreeds.presentation.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

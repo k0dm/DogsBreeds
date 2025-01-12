@@ -1,4 +1,4 @@
-package com.bugbender.dogsbreeds
+package com.bugbender.dogsbreeds.app
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp

@@ -1,6 +1,5 @@
-package com.bugbender.dogsbreeds.ui.theme
+package com.bugbender.dogsbreeds.presentation.ui.theme
 
-import androidx.compose.material3.Text
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
