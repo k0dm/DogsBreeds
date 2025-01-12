@@ -5,4 +5,7 @@
     <string name="fetch">Fetch</string>
     <string name="dog_image">Dog image</string>
     <string name="image_not_supported">Image not supported</string>
+    <string name="dog_navigation_icon">Dog navigation icon</string>
+    <string name="breeds_navigation_icon">Breeds navigation icon</string>
+    <string name="breeds">Breeds</string>
 </resources>

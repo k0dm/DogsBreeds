@@ -1,8 +1,7 @@
 package com.bugbender.dogsbreeds.data
 
 import com.bugbender.dogsbreeds.data.cloud.DogApiService
-import com.bugbender.dogsbreeds.data.cloud.DogDto
-import kotlinx.coroutines.delay
+
 import javax.inject.Inject
 
 interface DogRepository {
@@ -35,9 +34,7 @@ interface DogRepository {
 }
 
 interface DogLoadResult {
-
     data class Success(val dog: Dog) : DogLoadResult
-
     data class Error(val message: String) : DogLoadResult
 }
 
