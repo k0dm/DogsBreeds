@@ -1,10 +1,8 @@
 package com.bugbender.dogsbreeds.presentation.navigation
 
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -37,11 +35,7 @@ fun DogBreedsNavigationBar(navController: NavHostController) {
             },
             label = {
                 Text(text = stringResource(R.string.dogs))
-            },
-            colors = NavigationBarItemDefaults.colors(
-                indicatorColor = MaterialTheme.colorScheme.primary,
-                selectedTextColor = MaterialTheme.colorScheme.onSurface
-            )
+            }
         )
         NavigationBarItem(
             selected = currentDestination?.hasRoute<BreedsRoute>() ?: false,
@@ -56,11 +50,7 @@ fun DogBreedsNavigationBar(navController: NavHostController) {
             },
             label = {
                 Text(text = stringResource(R.string.breeds))
-            },
-            colors = NavigationBarItemDefaults.colors(
-                indicatorColor = MaterialTheme.colorScheme.primary,
-                selectedTextColor = MaterialTheme.colorScheme.onSurface
-            )
+            }
         )
     }
 }
