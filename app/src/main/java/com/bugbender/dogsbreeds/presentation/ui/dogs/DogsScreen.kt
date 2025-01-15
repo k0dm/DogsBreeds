@@ -1,6 +1,7 @@
 package com.bugbender.dogsbreeds.presentation.ui.dogs
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -32,21 +33,32 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil3.compose.AsyncImagePainter
 import coil3.compose.rememberAsyncImagePainter
 import coil3.request.ImageRequest
 import coil3.size.Size
 import com.bugbender.dogsbreeds.R
+import com.bugbender.dogsbreeds.data.Dog
 import com.bugbender.dogsbreeds.presentation.ui.theme.DogsBreedsTheme
 
 @Composable
-fun DogsScreen(
-    viewModel: DogsViewModel = viewModel(),
-    modifier: Modifier = Modifier,
-) {
+fun DogsScreen() {
+    val viewModel: DogsViewModel = hiltViewModel()
     val dogState by viewModel.dogState.observeAsState(DogsViewModel.DogState.FirstLoading)
 
+    DogsContent(
+        dogState = dogState,
+        onFetchButtonClicked = viewModel::fetchDog
+    )
+}
+
+@Composable
+fun DogsContent(
+    dogState: DogsViewModel.DogState,
+    onFetchButtonClicked: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     Column(
         modifier = modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -81,58 +93,12 @@ fun DogsScreen(
                 }
 
                 is DogsViewModel.DogState.Success -> {
-                    val dog = (dogState as DogsViewModel.DogState.Success).dog
-
-                    val model = ImageRequest.Builder(LocalContext.current)
-                        .data(dog.imageUrl)
-                        .size(Size.ORIGINAL)
-                        .build()
-                    val imageState by rememberAsyncImagePainter(model = model).state.collectAsState()
-
-                    when (imageState) {
-                        is AsyncImagePainter.State.Success -> {
-
-                            val intrinsicSize = (imageState as AsyncImagePainter.State.Success).painter!!.intrinsicSize
-
-                            Image(
-                                painter = imageState.painter!!,
-                                contentDescription = stringResource(R.string.dogs),
-                                contentScale = ContentScale.Fit,
-                                modifier = Modifier
-                                    .weight(1f, fill = false)
-                                    .aspectRatio(intrinsicSize.width / intrinsicSize.height)
-                                    .clip(MaterialTheme.shapes.medium)
-                            )
-                        }
-
-                        is AsyncImagePainter.State.Loading -> {
-                            CircularProgressIndicator(
-                                color = MaterialTheme.colorScheme.primary,
-                                trackColor = MaterialTheme.colorScheme.primaryContainer,
-                                modifier = Modifier.width(48.dp)
-                            )
-                        }
-
-                        is AsyncImagePainter.State.Error -> {
-                            Icon(
-                                painter = painterResource(R.drawable.image_not_supported),
-                                contentDescription = stringResource(R.string.image_not_supported),
-                            )
-                        }
-                        else -> {}
-                    }
-
-                    Text(
-                        text = "${dog.subBreed.orEmpty()} ${dog.breed}",
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(top = 8.dp)
-                    )
+                    DogStateSuccessContent(dogState)
                 }
 
                 is DogsViewModel.DogState.Error -> {
                     Text(
-                        text = (dogState as DogsViewModel.DogState.Error).message,
+                        text = dogState.message,
                         color = Color.Red,
                         textAlign = TextAlign.Center,
                         fontSize = 28.sp,
@@ -144,7 +110,7 @@ fun DogsScreen(
 
         if (dogState !is DogsViewModel.DogState.Loading) {
             Button(
-                onClick = viewModel::fetchDog,
+                onClick = onFetchButtonClicked,
                 modifier = Modifier.padding(bottom = 32.dp)
             ) {
                 Text(text = "Fetch")
@@ -157,8 +123,82 @@ fun DogsScreen(
 @Composable
 private fun DogsScreenPreview() {
     DogsBreedsTheme {
-        DogsScreen(modifier = Modifier.systemBarsPadding())
+        DogsContent(
+            dogState = DogsViewModel.DogState.Success(
+                dog = Dog(
+                    imageUrl = "https://dog.ceo/api/breed/australian/kelpie/images/random",
+                    breed = "Australian",
+                    subBreed = "Kelpie"
+                )
+            ),
+            onFetchButtonClicked = {},
+            modifier = Modifier.systemBarsPadding(),
+        )
     }
+}
+
+@Composable
+fun DogStateSuccessContent(dogState: DogsViewModel.DogState.Success) {
+    val dog = dogState.dog
+
+    val model = ImageRequest.Builder(LocalContext.current)
+        .data(dog.imageUrl)
+        .size(Size.ORIGINAL)
+        .build()
+    val imageState by rememberAsyncImagePainter(model = model).state.collectAsState()
+
+    Column(
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.fillMaxSize()
+    ) {
+        when (imageState) {
+            is AsyncImagePainter.State.Success -> {
+
+                val intrinsicSize =
+                    (imageState as AsyncImagePainter.State.Success).painter!!.intrinsicSize
+
+                Image(
+                    painter = imageState.painter!!,
+                    contentDescription = stringResource(R.string.dogs),
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier
+                        .weight(1f, fill = false)
+                        .aspectRatio(intrinsicSize.width / intrinsicSize.height)
+                        .clip(MaterialTheme.shapes.medium)
+                )
+            }
+
+            is AsyncImagePainter.State.Loading -> {
+                CircularProgressIndicator(
+                    color = MaterialTheme.colorScheme.primary,
+                    trackColor = MaterialTheme.colorScheme.primaryContainer,
+                    modifier = Modifier.width(48.dp)
+                )
+            }
+
+            is AsyncImagePainter.State.Error -> {
+                Icon(
+                    painter = painterResource(R.drawable.image_not_supported),
+                    contentDescription = stringResource(R.string.image_not_supported),
+                    modifier = Modifier
+                        .aspectRatio(1f)
+                        .clip(MaterialTheme.shapes.medium)
+                        .background(MaterialTheme.colorScheme.primary.copy(0.1f))
+                )
+            }
+
+            else -> {}
+        }
+
+        Text(
+            text = "${dog.subBreed.orEmpty()} ${dog.breed}",
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(top = 8.dp)
+        )
+    }
+
 }
 
 @Composable
